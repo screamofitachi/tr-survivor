@@ -164,6 +164,29 @@ section{padding:64px 0;scroll-margin-top:90px}
 .row .record .v.loss{color:var(--red)}
 .row .record .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 
+/* ---------- BAŞARILAR ---------- */
+.ach-list{display:flex;flex-direction:column;gap:36px}
+.ach{
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:.25s;
+}
+.ach:hover{border-color:var(--amber);box-shadow:var(--shadow)}
+.ach .ach-top{display:flex;align-items:center;gap:14px;padding:22px 26px 18px}
+.ach .ach-medal{
+  width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:1.5rem;flex-shrink:0;
+  background:linear-gradient(145deg,var(--gold),var(--amber-deep));box-shadow:0 6px 16px rgba(244,165,43,.35);
+}
+.ach .ach-title{font-family:'Fredoka';font-size:1.35rem;font-weight:600;line-height:1.2}
+.ach img{display:block;width:100%;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.ach .ach-foot{padding:18px 26px;text-align:center}
+.ach .ach-link{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:12px 26px;border-radius:11px;font-weight:600;text-decoration:none;
+  background:linear-gradient(145deg,var(--amber-2),var(--amber-deep));color:#1a1408;
+  transition:transform .18s, box-shadow .18s;
+}
+.ach .ach-link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(244,165,43,.4)}
+
 /* ---------- RULES ---------- */
 .rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
 .rule{
@@ -216,6 +239,7 @@ footer a{color:var(--amber-2);text-decoration:none}
     <div class="nav-links" id="navlinks">
       <a href="#home" class="active">Ana Sayfa</a>
       <a href="#siralama">Sıralama</a>
+      <a href="#basarilar">Başarılar</a>
       <a href="#kurallar">Kurallar</a>
       <a href="#banlilar">Banlılar</a>
     </div>
@@ -253,6 +277,18 @@ footer a{color:var(--amber-2);text-decoration:none}
     <div class="podium reveal" id="podium"></div>
 
     <div class="rank-list reveal" id="rankList"></div>
+  </div>
+</section>
+
+<!-- ============ BAŞARILAR ============ -->
+<section id="basarilar">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">Gurur Tablomuz</div>
+      <h2>Başarılarımız</h2>
+      <p>Düzenlediğimiz turnuvalar ve kazananları.</p>
+    </div>
+    <div class="ach-list reveal" id="achList"></div>
   </div>
 </section>
 
@@ -314,6 +350,28 @@ const PLAYERS = [
   { name:"Oyuncu 13", w:0, l:0 },
   { name:"Oyuncu 14", w:0, l:0 },
   { name:"Oyuncu 15", w:0, l:0 },
+];
+
+// --- BAŞARILAR / TURNUVALAR ---
+// img: görselin yolu (images/ klasörüne koyacaksın)
+// link: turnuva detay linki (Challonge vs.)
+const ACHIEVEMENTS = [
+  {
+    title:"Transformice Survivor Global Tournament 2023 Kazananı",
+    img:"images/basari-1.png",
+    link:"https://challonge.com/tr/TSR_Global_Tournament_2023"
+  },
+  {
+    title:"World Nations Tournament 2025 — Kazanan: TR 🇹🇷",
+    img:"images/basari-2.png",
+    link:"https://challonge.com/tr/global3v3nations"
+  },
+  {
+    title:"Global Tournament 1v1 2025 Kazananı",
+    img:"images/basari-3.png",
+    link:"https://challonge.com/tr/1v1globaltournament"
+  },
+  // Yeni başarı eklemek için yukarıdaki bloğu kopyalayıp aşağıya yapıştır.
 ];
 
 // --- KURALLAR ---
@@ -394,7 +452,21 @@ function animateCount(id,target){
   const t=setInterval(()=>{cur+=step;if(cur>=target){cur=target;clearInterval(t)}el.textContent=cur;},25);
 }
 
-renderPodium();renderList();renderRules();renderBans();
+function renderAchievements(){
+  document.getElementById('achList').innerHTML = ACHIEVEMENTS.map(a=>`
+    <div class="ach">
+      <div class="ach-top">
+        <div class="ach-medal">🏆</div>
+        <div class="ach-title">${a.title}</div>
+      </div>
+      <img src="${a.img}" alt="${a.title}" loading="lazy">
+      <div class="ach-foot">
+        <a class="ach-link" href="${a.link}" target="_blank" rel="noopener">🔗 Turnuva Detayları</a>
+      </div>
+    </div>`).join('');
+}
+
+renderPodium();renderList();renderAchievements();renderRules();renderBans();
 const totalMatches = PLAYERS.reduce((s,p)=>s+p.w+p.l,0);
 window.addEventListener('load',()=>{animateCount('s-players',PLAYERS.length);animateCount('s-matches',totalMatches);});
 
