@@ -165,7 +165,16 @@ section{padding:64px 0;scroll-margin-top:90px}
 .row .record .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 
 /* ---------- BAŞARILAR ---------- */
-.ach-list{display:flex;flex-direction:column;gap:36px}
+.ach-list{display:flex;flex-direction:column;gap:54px}
+.ach-year{display:flex;flex-direction:column;gap:24px}
+.ach-year-head{display:flex;align-items:center;gap:18px}
+.ach-year-head span{
+  font-family:'Fredoka';font-weight:700;font-size:2.2rem;line-height:1;
+  background:linear-gradient(120deg,var(--amber-2),var(--amber-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.ach-year-head::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--line),transparent)}
+.ach-year-items{display:flex;flex-direction:column;gap:28px}
 .ach{
   background:linear-gradient(180deg,var(--panel-2),var(--panel));
   border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:.25s;
@@ -388,23 +397,49 @@ const PLAYERS = [
 ];
 
 // --- BAŞARILAR / TURNUVALAR ---
+// year: turnuvanın yılı (gruplama bu alana göre yapılır, en yeni yıl üstte çıkar)
+// Aynı yıl içinde, listede ÜSTTE yazdığın turnuva o yılın en üstünde görünür.
 const ACHIEVEMENTS = [
+  // ---------- 2025 ----------
   {
+    year:2025,
+    title:"Global Tournament 1v1 2025 Kazananı: Denizovicov#0000",
+    img:"imagesbasari-3.png",
+    link:"https://challonge.com/tr/1v1globaltournament"
+  },
+  {
+    year:2025,
+    title:"World Nations Tournament 2025 — Kazanan: TR: Denizovicov#0000, Kagn#9527, Caps#8846 🇹🇷",
+    img:"imagesbasari-2.png",
+    link:"https://challonge.com/tr/global3v3nations"
+  },
+  // ---------- 2023 ----------
+  {
+    year:2023,
     title:"Transformice Survivor Global Tournament 2023 Kazananı: Reflexll#9171",
     img:"imagesbasari-1.png",
     link:"https://challonge.com/tr/TSR_Global_Tournament_2023"
   },
   {
-    title:"World Nations Tournament 2025 — Kazanan: TR: Denizovicov#0000, Kagn#9527, Caps#8846 🇹🇷",
-    img:"imagesbasari-2.png",
-    link:"https://challonge.com/tr/global3v3nations"
+    year:2023,
+    title:"European Rank Transformice Survivor 2023 Kazananı: Reflexll#9171",
+    img:"imagesbasari-4.png",
+    link:"https://challonge.com/tr/Tournament1v1EU2023"
+  },
+  // ---------- 2022 ----------
+  {
+    year:2022,
+    title:"European Rank Transformice Survivor 2022 — 2 Türk Finalist 🇹🇷",
+    img:"imagesbasari-5.png",
+    link:"https://challonge.com/tr/EuRank_Tournament_Survivor2022"
   },
   {
-    title:"Global Tournament 1v1 2025 Kazananı: Denizovicov#0000",
-    img:"imagesbasari-3.png",
-    link:"https://challonge.com/tr/1v1globaltournament"
+    year:2022,
+    title:"2v2 Servers Tournament EU 2022 Kazananı: +Strikess#0000 & R_eflex#6555 (TR) 🇹🇷",
+    img:"imagesbasari-6.png",
+    link:"https://challonge.com/tr/Survivor_2v2servers_tournament_EU2022"
   },
-  // Yeni başarı eklemek için yukarıdaki bloğu kopyalayıp aşağıya yapıştır.
+  // Yeni başarı eklerken "year" alanını yazmayı unutma.
 ];
 
 // --- YOUTUBE KANALLARI ---
@@ -463,17 +498,27 @@ function renderList(){
 }
 
 function renderAchievements(){
-  document.getElementById('achList').innerHTML = ACHIEVEMENTS.map(a=>`
-    <div class="ach">
-      <div class="ach-top">
-        <div class="ach-medal">🏆</div>
-        <div class="ach-title">${a.title}</div>
-      </div>
-      <img src="${a.img}" alt="${a.title}" loading="lazy">
-      <div class="ach-foot">
-        <a class="ach-link" href="${a.link}" target="_blank" rel="noopener">🔗 Turnuva Detayları</a>
-      </div>
-    </div>`).join('');
+  // yılları büyükten küçüğe sırala
+  const years = [...new Set(ACHIEVEMENTS.map(a=>a.year))].sort((a,b)=>b-a);
+  document.getElementById('achList').innerHTML = years.map(y=>{
+    const items = ACHIEVEMENTS.filter(a=>a.year===y);
+    const cards = items.map(a=>`
+      <div class="ach">
+        <div class="ach-top">
+          <div class="ach-medal">🏆</div>
+          <div class="ach-title">${a.title}</div>
+        </div>
+        <img src="${a.img}" alt="${a.title}" loading="lazy">
+        <div class="ach-foot">
+          <a class="ach-link" href="${a.link}" target="_blank" rel="noopener">🔗 Turnuva Detayları</a>
+        </div>
+      </div>`).join('');
+    return `
+      <div class="ach-year">
+        <div class="ach-year-head"><span>${y}</span></div>
+        <div class="ach-year-items">${cards}</div>
+      </div>`;
+  }).join('');
 }
 
 function renderYoutube(){
